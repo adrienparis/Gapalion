@@ -1,7 +1,9 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
 
-"""nameDuplicate.py: check if there is no duplicates."""
+u"""Listes les nodes qui ont des noms non-unique
+les | représente l'arborescence des groupe dans lequel
+le node/transform est rangé"""
 
 __author__      = "Adrien PARIS"
 __email__       = "a.paris.cs@gmail.com"
@@ -10,9 +12,6 @@ import maya.cmds as cmds
 
 title = u"Vérification des doublons"
 image = "doubleN"
-explanation = u"""Listes les nodes qui ont des noms non-unique
-                   les | représente l'arborescence des groupe dans lequel
-                   le node/transform est rangé"""
 
 
 

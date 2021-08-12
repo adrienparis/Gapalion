@@ -1,5 +1,7 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
+u"""Ce test vérifie que le transform [LEFT] a bien le même rotateOrder que le transform [RIGHT]
+Les [does not exist] indique un problème dans la nomenclature des noms et donc qu'il ne peut tester la symétrie des rotateOrders"""
 
 
 __author__      = "Adrien PARIS"
@@ -9,8 +11,6 @@ import maya.cmds as cmds
 
 title = u"Vérification de la symétrie des rotates orders"
 image = ""
-explanation = u"""Ce test vérifie que le transform [LEFT] a bien le même rotateOrder que le transform [RIGHT]
-Les [does not exist] indique un problème dans la nomenclature des noms et donc qu'il ne peut tester la symétrie des rotateOrders"""
 
 def test():
     passed = True

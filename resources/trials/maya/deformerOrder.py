@@ -1,5 +1,8 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
+u"""Sur une propal de Yann GENTY le boss ♥
+l'ordre des deformer doit être cluster, puis skinCluster, pour finir sur les blendShape
+Si vous mettez des lattices, le test peut se perdre, et donc une vérification manuelle est nécessaire"""
 
 
 __author__      = "Adrien PARIS"
@@ -9,9 +12,6 @@ import maya.cmds as cmds
 
 title = u"Vérification de l'ordre des deformer"
 image = ""
-explanation = u"""Sur une propal de Yann GENTY le boss ♥
-                   l'ordre des deformer doit être cluster, puis skinCluster, pour finir sur les blendShape
-                   Si vous mettez des lattices, le test peut se perdre, et donc une vérification manuelle est nécessaire"""
 
 def matchnmatch(a, b):
     if len(a) == 0:

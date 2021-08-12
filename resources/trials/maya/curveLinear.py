@@ -10,7 +10,6 @@ import maya.cmds as cmds
 
 title = u"Vérification de la linéarite des courbe d'animation"
 image = "curveLinear"
-explanation = ""
 
 def test():
     passed = True

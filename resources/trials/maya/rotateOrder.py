@@ -1,6 +1,8 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
-
+u"""Dans le cas très spécifoque des bipeds apris à creativeSeeds
+Liste tout les transform qui n'ont pas leurs rotate order bien setter
+"""
 
 __author__      = "Adrien PARIS"
 __email__       = "a.paris.cs@gmail.com"
@@ -9,9 +11,6 @@ import maya.cmds as cmds
 
 title = u"Vérification des rotate Order pour biped classic"
 image = ""
-explanation = u"""Dans le cas très spécifoque des bipeds apris à creativeSeeds
-                   Liste tout les transform qui n'ont pas leurs rotate order bien setter
-                   """
 
 def test():
     errors = []

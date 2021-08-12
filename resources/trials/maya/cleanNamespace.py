@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
 
 u"""liste les namespace en trop"""

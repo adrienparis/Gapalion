@@ -1,6 +1,9 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
-
+u"""Regarde si un transform [LEFT] a bien son double en [RIGHT]
+marque d'un X l'élément manquant
+Si ce test ne passe pas, il y a de fortes chances que certain tests échoue
+dû à une mauvaise nomination"""
 
 __author__      = "Adrien PARIS"
 __email__       = "a.paris.cs@gmail.com"
@@ -9,10 +12,6 @@ import maya.cmds as cmds
 
 title = u"Vérification de la symétrie des noms"
 image = ""
-explanation = u"""Regarde si un transform [LEFT] a bien son double en [RIGHT]
-                   marque d'un X l'élément manquant
-                   Si ce test ne passe pas, il y a de fortes chances que certain tests échoue
-                   dû à une mauvaise nomination"""
 
 def centerText(text, gap=30):
     l = len(text)

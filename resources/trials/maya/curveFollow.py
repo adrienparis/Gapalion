@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
 
 __author__      = "Adrien PARIS"

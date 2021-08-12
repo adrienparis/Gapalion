@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
 
 u"""vérifie que les transform des controleur on bien leur valeurs par défaut

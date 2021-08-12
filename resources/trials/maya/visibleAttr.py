@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
 
 
@@ -9,7 +9,6 @@ import maya.cmds as cmds
 
 title = u"Vérification de la visibilite de l'attribut [visibilitty] des controlleurs"
 image = "eye"
-explanation = ""
 
 def test():
     passed = True

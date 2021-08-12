@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/env mayapy
 # -- coding: utf-8 --
 
 
@@ -10,7 +10,6 @@ import maya.cmds as cmds
 
 title = u"Vérification du décalage entre les chaînes IK et FK"
 image = "joinSym"
-explanation = ""
 
 def test():
     errors = []

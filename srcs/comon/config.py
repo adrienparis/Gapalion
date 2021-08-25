@@ -1,3 +1,11 @@
+# -- coding: utf-8 --
+'''Interact with the config file to recover data
+Must be data than change  very infrequently
+'''
+
+__author__      = "Adrien PARIS"
+__email__       = "a.paris.cs@gmail.com"
+
 import os
 import keyring
 from cryptography.fernet import Fernet
@@ -12,6 +20,7 @@ def write(name, value, secret=False):
     global secret_key
     prefVars = {} 
     fPath = os.path.join(PATH, NAME)
+
     if not os.path.isdir(PATH):
         os.makedirs(PATH)
     if os.path.isfile(fPath):   
@@ -21,11 +30,8 @@ def write(name, value, secret=False):
                 varName = l.split(":")[0].replace(" ", "")
                 varValue = l[l.index(":") + 1:].lstrip().rstrip("\n")
                 prefVars[varName] = varValue
-
-                # res = eval(l)
-                # prefVars[res[0]] = res[1]
-
                 l = f.readline()
+    # if the value must be secret, crypt it, and store the crypting key in the OS vault
     if secret:
         if secret_key == None:
             secret_key = keyring.get_password(SERVICE, "secret_key")
@@ -43,6 +49,7 @@ def write(name, value, secret=False):
 def read(name, secret=False):
     global secret_key
     fPath = os.path.join(PATH, NAME)
+    
     if not os.path.isdir(PATH):
         return None
     if not os.path.isfile(fPath):

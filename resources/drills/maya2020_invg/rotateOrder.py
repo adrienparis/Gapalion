@@ -11,6 +11,7 @@ import maya.cmds as cmds
 
 title = u"Vérification des rotate Order pour biped classic"
 image = ""
+tags = "rig", "cs", "humanoid"
 
 def test():
     errors = []

@@ -12,6 +12,7 @@ import maya.cmds as cmds
 
 title = u"Vérification de l'ordre des deformer"
 image = ""
+tags = "asset", "rig", "cs"
 
 def matchnmatch(a, b):
     if len(a) == 0:

@@ -13,6 +13,7 @@ import maya.cmds as cmds
 
 title = u"Vérification des valeurs par default des controleurs"
 image = ""
+tags = "asset", "rig", "cs"
 
 def getDefaultAttr(c):
     array = []

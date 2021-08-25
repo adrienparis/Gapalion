@@ -12,6 +12,7 @@ import maya.cmds as cmds
 
 title = u"Vérification de la symétrie des noms"
 image = ""
+tags = "asset", "rig", "cs", "symetric"
 
 def centerText(text, gap=30):
     l = len(text)

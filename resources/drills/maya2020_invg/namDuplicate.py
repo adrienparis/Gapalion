@@ -12,8 +12,7 @@ import maya.cmds as cmds
 
 title = u"Vérification des doublons"
 image = "doubleN"
-
-
+tags = "asset", "cs"
 
 passed = True
 errors = []

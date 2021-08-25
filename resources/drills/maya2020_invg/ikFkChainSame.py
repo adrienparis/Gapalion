@@ -10,6 +10,7 @@ import maya.cmds as cmds
 
 title = u"Vérification du décalage entre les chaînes IK et FK"
 image = "joinSym"
+tags = "asset", "rig", "cs"
 
 def test():
     errors = []

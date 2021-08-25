@@ -8,6 +8,7 @@ import maya.cmds as cmds
 
 title = u"Vérification des drive and key des follows"
 image = ""
+tags = "asset", "rig", "cs"
 
 def test():
     errors = []

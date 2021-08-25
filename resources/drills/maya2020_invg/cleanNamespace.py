@@ -10,6 +10,7 @@ import maya.cmds as cmds
 
 title = u"Vérification de la proprete des namespaces"
 image = ""
+tags = "asset", "cs"
 
 def test():
     passed = False

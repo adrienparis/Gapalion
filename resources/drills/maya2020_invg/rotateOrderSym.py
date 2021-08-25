@@ -11,6 +11,7 @@ import maya.cmds as cmds
 
 title = u"Vérification de la symétrie des rotates orders"
 image = ""
+tags = "rig", "cs", "symetric"
 
 def test():
     passed = True

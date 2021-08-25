@@ -1,5 +1,23 @@
 
 # -- coding: utf-8 --
+
+class ExerciceResult:
+    title = ""
+    passed = False
+    message = ""
+    explanation = ""
+    author = ""
+
+class TrialInterface:
+    def execute(self):
+        pass
+
+    @staticmethode
+    def execute_all_trials(trials):
+        '''sort trial by type'''
+        pass
+
+
 class Trial():
     def __init__(self, title, func):
         self.title = title

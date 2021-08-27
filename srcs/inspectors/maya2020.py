@@ -21,65 +21,37 @@ __email__ = "a.paris.cs@gmail.com"
 import os
 import sys
 import importlib
+import maya.cmds as cmds
 
-def drill_to_dic(drill):
-    dico = {}
-    dico["name"] = drill.__name__.split(".")[-1]
-    dico["author"] = None
-    if hasattr(drill, '__author__'):
-        if drill.__author__ != "prenom NOM":
-            dico["author"] = unicode(drill.__author__)
-    dico["email"] = unicode(drill.__email__) if hasattr(drill, '__email__') else None
-    dico["title"] = unicode(drill.title) if hasattr(drill, 'title') else None
-    dico["tags"] = []
-    try:
-        tags = eval(unicode(drill.tags) if hasattr(drill, 'tags') else [])
-    except:
-        tags = []
-    if type(tags) == "str":
-        dico["tags"].append(tags)
-    else:
-        dico["tags"].extend(tags)
+def importmaya(mayapy_path):
 
-    dico["explanation"] = unicode(drill.explanation) if hasattr(drill, 'explanation') else None
-    dico["explanation"] = unicode(drill.__doc__) if hasattr(drill, '__doc__') else None
-    dico["image"] = None
-    if drill.image != "":
-        if hasattr(drill, 'image'):
-            dico["image"] = unicode(drill.image)
-    return dico
+    MAYA_LOCATION = os.path.dirname(os.path.dirname(mayapy_path))
+    PYTHON_LOCATION = os.path.join(MAYA_LOCATION, "/Python/Lib/site-packages")
 
-def ls_drills(rsrcs_path):
-    sys.path.append(rsrcs_path) if rsrcs_path not in sys.path else None
-    modulename = "maya2020_invg"
+    os.environ["MAYA_LOCATION"] = MAYA_LOCATION
+    os.environ["PYTHONPATH"] = PYTHON_LOCATION
+
+    sys.path.append(MAYA_LOCATION)
+    sys.path.append(PYTHON_LOCATION)
+    sys.path.append(MAYA_LOCATION+"/bin")
+    sys.path.append(MAYA_LOCATION+"/lib")
+    sys.path.append(MAYA_LOCATION+"/Python")
+    sys.path.append(MAYA_LOCATION+"/Python/DLLs")
+    sys.path.append(MAYA_LOCATION+"/Python/Lib")
+    sys.path.append(MAYA_LOCATION+"/Python/Lib/plat-win")
+    sys.path.append(MAYA_LOCATION+"/Python/Lib/lib-tk")
     with open(os.devnull,"w") as devNull:
         original = sys.stdout
         sys.stdout = devNull
-        invg_mod = importlib.import_module(modulename)
-        invg_mod = __import__(modulename)
+        import maya.standalone
+        maya.standalone.initialize(name='python')
         sys.stdout = original 
-        l = []
-        for t in invg_mod.__all__:
-            mod_t = importlib.import_module(modulename + "." + t)
-            l.append(drill_to_dic(mod_t))
-        return l
-    return []
-
-formulaQuadru = "(#rig*#chara-#props)*#cs"
-formulaQuadru = "(#rig*#chara-#props)*#cs-cleanNamespace"
-
-tags = {"rig" : ["rotateOrder", "worldScale", "ctrlSet", "rigPropsTest"],
-        "chara": ["rotateOrder", "worldScale", "ctrlSet"],
-        "props": ["worldScale", "ctrlSet", "rigPropsTest"],
-        "cs": ["rotateOrder", "worldScale", "triangle", "ctrlSet", "rigPropsTest"],
-        }
 
 def splitnonalpha(s):
    pos = 1
    while pos < len(s) and s[pos].isalpha():
       pos+=1
    return (s[:pos], s[pos:])
-
 
 class ExoTag():
     exos = {}
@@ -96,7 +68,7 @@ class ExoTag():
             else:
                 self.tags = []
         else:
-            self.tags = [tag]
+            self.tags = [x for x in ExoTag.all if x.name == tag]
 
     @staticmethod
     def convert(f):
@@ -128,55 +100,164 @@ class ExoTag():
         return self
     def __sub__(self, o):
         for i in o.tags:
-            self.tags = list(filter((i).__ne__, self.tags))
+            self.tags = [x for x in self.tags if x not in o.tags]
         return self
     def __mul__(self, o):
         self.tags = [x for x in self.tags if x in o.tags]
         return self
     def __div__(self, o):
-        self.tags = [x for x in self.tags if x not in o.tags]
+        self.tags = [x for x in self.tags if x not in o.tags] + [x for x in o.tags if x not in self.tags]
         return self
 
-def execute_drills(rsrcs_path, formula):
-    drills = ls_drills(rsrcs_path)
-    tags = {}
-    for d in drills:
-        ExoTag.all.append(d["name"]) if d["name"] not in ExoTag.all else None
-        ts = d["tags"]
-        for t in ts:
-            if t in tags:
-                tags[t].append(d["name"])
-            else:
-                tags[t] = [d["name"]]
+class Drill():
+    def __init__(self, module):
+        self.name = module.__name__.split(".")[-1]
+        self.title = unicode(module.title) if hasattr(module, 'title') else None
+        self.doc = unicode(module.__doc__) if hasattr(module, '__doc__') else None
+                
+        self.tags = []
+        try:
+            tags = eval(unicode(module.tags) if hasattr(module, 'tags') else [])
+        except:
+            tags = []
+        if type(tags) == "unicode" or type(tags) == "str":
+            self.tags.append(tags)
+        else:
+            self.tags.extend(tags)
+        self.author = unicode(module.__author__) if hasattr(module, '__author__') else None
+        self.email = unicode(module.__email__) if hasattr(module, '__email__') else None
+        self.image = unicode(module.image) if hasattr(module, 'image') else None
+        # self.func = module.main if hasattr(module, 'main') else None
+        self.func = module.test if hasattr(module, 'test') else None
+        self.file = None 
+        self.status = "" #must be "SUCCESS" "ERROR" or "WARNING"
+        self.passed = False
+        self.message = None
 
-    ExoTag.tag = []
-    ExoTag.exos = tags
-    f = ExoTag.convert(formula)
-    try :
-        p = eval(f)
-        print(p.tags)
-    except:
-        print("Error - While evaluating command")
+    def to_dict(self):
+        filter_keys = ["name", "title", "doc", "tags", "author", "email",
+                      "image", "file", "passed", "status", "message"]
+        return { k: self.__dict__[k] for k in filter_keys }
+    
+    def start(self):
+        with open(os.devnull,"w") as devNull:
+            original = sys.stdout
+            sys.stdout = devNull
+            try:
+                self.check_return_value(*self.func())
+            except Exception as e:
+                if self.author == None:
+                    self.message = [u"This drill has failed because it was badly written",
+                                    u"It has been written by an Anonymous author",
+                                    e,
+                                    u"Please contact {} at {} to resolve this issue".format("Adrien PARIS", "a.paris.cs@gmail.com")]
+                else:
+                    self.message = [u"This trial has failed because it was badly written",
+                                    e,
+                                    u"Please contact {} at {} to resolve this issue".format(self.author, self.email)]
+                self.passed = False
+        sys.stdout = original 
+
+    def check_return_value(self, *value):
+        if len(value) != 2:
+            self.message = ["Returned values should be to the count of 2,",
+                            "a string containing ethier 'SUCCESS', 'WARNING', 'ERROR'",
+                            "and a list of string, containing the error messages",
+                            value]
+            self.passed = False
+            return
+        if not isinstance(value[1], list):
+            self.message = ["Returned message should be a list of str"]
+            self.passed = False
+            return
+        if not value[0] in ["SUCCESS", "WARNING", "ERROR"]:
+            self.message = ["Returned status is incorect", "Drill message:"] + value[1]
+            self.passed = False
+            return
+        self.passed = True
+        self.status = value[0]
+        self.message = value[1]
+
+    @staticmethod
+    def load_drills(rsrcs_path):
+        sys.path.append(rsrcs_path) if rsrcs_path not in sys.path else None
+        modulename = "maya2020_invg"
+        l = []
+        with open(os.devnull,"w") as devNull:
+            original = sys.stdout
+            sys.stdout = devNull
+            invg_mod = importlib.import_module(modulename)
+            invg_mod = __import__(modulename)
+            sys.stdout = original 
+            for t in invg_mod.__all__:
+                mod_t = importlib.import_module(modulename + "." + t)
+                l.append(Drill(mod_t))
+        return l
+
+    @staticmethod
+    def get_drills_from_tags(rsrcs_path, tags):
+        drills = Drill.load_drills(rsrcs_path)
+        tags_dict = {}
+        for d in drills:
+            ExoTag.all.append(d) if d not in ExoTag.all else None
+            ts = d.tags
+            for t in ts:
+                if t in tags_dict:
+                    tags_dict[t].append(d)
+                else:
+                    tags_dict[t] = [d]
+
+        # reset list of tags
+        ExoTag.tag = []
+        ExoTag.exos = tags_dict
+        f = ExoTag.convert(tags)
+        try :
+            p = eval(f)
+            return p.tags
+        except:
+            print("'ERROR - While evaluating tag formula - [{}]'".format(tags.replace("'", "\\'")))
+            return []
+
+
+    @staticmethod
+    def execute_drills(drills, file):
+        if not os.path.exists(file):
+            return False
+        try:
+            cmds.file(file, o=True)
+        except RuntimeError as e:
+            pass
+        for d in drills:
+            d.file = file
+            d.start()
+        return True
+
+
+    def __repr__(self):
+        return "Drills<{}>".format(self.name)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
+    argv = sys.argv
+    if len(argv) < 3:
         exit()
-
+    
     mayapy_path = sys.executable
-    rsrcs_path = sys.argv[1] + "/drills"
+    rsrcs_path = argv[1] + "/drills"
     if not os.path.exists(rsrcs_path):
         exit()
 
-    if len(sys.argv) == 3:
-        if sys.argv[2] == "ls":
-            for i in ls_drills(rsrcs_path):
-                print(i)
-    elif len(sys.argv) / 2 != 0:
-        files_eval = [sys.argv[i:i+2] for i in range(2, len(sys.argv), 2)]
+    if len(argv) == 3:
+        if argv[2] == "ls":
+            for d in Drill.load_drills(rsrcs_path):
+                print(d.to_dict())
+    elif len(argv) / 2 != 0:
+        files_eval = [argv[i:i+2] for i in range(2, len(argv), 2)]
         for file, tags in files_eval:
-            print("_" * 50)
-            print("file : {}".format(file))
-            print("tags : {}".format(tags))
-            execute_drills(rsrcs_path, tags)
-            print(" ")
+            importmaya(mayapy_path)
+            drills_ls = Drill.get_drills_from_tags(rsrcs_path, tags)
+            if Drill.execute_drills(drills_ls, file) == False:
+                print("'ERROR - file does not exists - {}'".format(file))
+                continue
+            for d in drills_ls:
+                print(str(d.to_dict()))

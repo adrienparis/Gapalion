@@ -24,10 +24,10 @@ def matchnmatch(a, b):
     if a[0] != b[0]:
         return matchnmatch(a[1:], b)
 
-def test():
+def main():
     temp = ["cluster", "skinCluster", "blendShape"]
     # temp = ["cluster", "skinCluster", "tweak", "blendShape"]
-    passed = True
+    status = "SUCCESS"
 
     msg = ["the order should be : ".ljust(30) + "-> " + str(temp), ""]
 
@@ -39,9 +39,9 @@ def test():
         cnt = [x for x in cnt if x in temp]
         v = matchnmatch(temp, cnt)
         if not v:
-            passed = False
+            status = "ERROR"
             msg.append(s.ljust(30) + "-> " + str(cnt))
-    if passed:
+    if status == "SUCCESS":
         msg = []
 
-    return passed, msg
+    return status, msg

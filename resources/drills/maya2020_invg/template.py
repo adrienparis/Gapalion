@@ -11,9 +11,11 @@ import maya.cmds as cmds
 title = u"Nom du test"
 image = u"questionMark"
 
-def test():
-    # Change this value to false if the test fails
-    passed = True
+def main():
+    # Set this value to SUCCESS if it pass
+    #                   ERROR if it failed
+    #                   WARNING if it doesn't pass because of an imprecision
+    passed = "SUCCESS"
 
     # This should be an array of strings
     # the message you want to send
@@ -23,10 +25,10 @@ def test():
     # DO SOME TESTS #
     #################
 
-    return passed, msg
+    return status, msg
 
 if __name__ == "__main__":
-    p, m = test()
+    p, m = main()
     if p:
         print("##########")
         print("# PASSED #")

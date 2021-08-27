@@ -12,9 +12,9 @@ title = u"Vérification du décalage entre les chaînes IK et FK"
 image = "joinSym"
 tags = "asset", "rig", "cs"
 
-def test():
+def main():
     errors = []
-    passed = True
+    status = "SUCCESS"
     for ik in cmds.ls(type="joint"):
         if not ik.startswith("ik_"):
             continue
@@ -28,8 +28,8 @@ def test():
             if abs(s - i) >= 0.00001:
                 error = True
         if error:
-            passed = False
+            status = "ERROR"
             errors.append(ik + "" + str(ikMatrice))
             errors.append(sk + "" + str(skMatrice))
             errors.append("")
-    return passed, errors
+    return status, errors

@@ -14,15 +14,13 @@ title = u"Vérification des doublons"
 image = "doubleN"
 tags = "asset", "cs"
 
-passed = True
-errors = []
-def test():
-    passed = True
+def main():
+    status = "SUCCESS"
     errors = []
     dupName = {}
     for c in cmds.ls():
         if "|" in c:
-            passed = False
+            status = "ERROR"
             name = c.split("|")[-1]
             if c.split("|")[-1] in dupName:
                 dupName[name].append(c)
@@ -34,4 +32,4 @@ def test():
             errors.append(" " * 4 + n)
         errors.append("")
 
-    return passed, errors
+    return status, errors

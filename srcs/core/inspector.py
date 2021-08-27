@@ -15,11 +15,11 @@ def interact(soft, *command):
 
     with open("./jargon_tmp", "w") as jargon:
 
+        l = []
+        l += list(command)
         original = sys.stdout
         sys.stdout = jargon
-        p = Popen(soft_cmd + [resources_path] + 
-                  list(command), #Action to interact with
-                cwd="./srcs/inspectors/maya2020",
+        p = Popen(soft_cmd + [resources_path] + l,
                 stdout=subprocess.PIPE)
         sys.stdout = original 
     stdout, stderr = p.communicate()

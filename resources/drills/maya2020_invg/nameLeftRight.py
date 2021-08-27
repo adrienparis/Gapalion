@@ -22,9 +22,9 @@ def centerText(text, gap=30):
     sent = sent.ljust(gap)
     return sent
 
-def test():
+def main():
     errors = []
-    passed = True
+    status = "SUCCESS"
     errors.append(" " * 5 + centerText("Left") + centerText("Right"))
     errors.append("")
     names = cmds.ls()
@@ -33,11 +33,11 @@ def test():
         if oSide == None:
             continue
         if not oSide in names:
-            passed = False
+            status = "ERROR"
             sent = " " * 5
             sent += centerText(n) + centerText("X") if n.endswith("_L") else centerText("X") + centerText(n)
             errors.append(sent)
-    if passed:
+    if status == "SUCCESS":
         errors = []
 
-    return passed, errors
+    return status, errors

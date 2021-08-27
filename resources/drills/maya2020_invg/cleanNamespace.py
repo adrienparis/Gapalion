@@ -12,15 +12,15 @@ title = u"Vérification de la proprete des namespaces"
 image = ""
 tags = "asset", "cs"
 
-def test():
-    passed = False
+def main():
+    status = "ERROR"
     errors = []
     namespaces = cmds.namespaceInfo(listOnlyNamespaces=True, recurse=True)
     namespaces.remove("UI")
     namespaces.remove("shared")
     if len(namespaces):
         errors = namespaces
-        passed = False
+        status = "ERROR"
     else:
-        passed = True
-    return passed, errors
+        status = "SUCCESS"
+    return status, errors

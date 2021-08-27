@@ -28,8 +28,9 @@ def getDefaultAttr(c):
     array.append(cmds.getAttr(c + ".sz"))
     return array
 
-def test():
+def main():
     passed = True
+    status = ""
     errors = []
     transform = ["tx", "ty", "tz", "rx", "ry", "rz", "sx", "sy", "sz"]
     defaultValues = [0, 0, 0, 0, 0, 0, 1, 1, 1]
@@ -39,6 +40,7 @@ def test():
             array = getDefaultAttr(c)
             if array != defaultValues:
                 passed = False
+                status = "ERROR"
                 errorsSentence = [transform[i] for i in range(0, len(transform)) 
                                   if array[i] > defaultValues[i] + 0.001 or
                                   array[i] < defaultValues[i] - 0.001 ]
@@ -53,6 +55,7 @@ def test():
             array = getDefaultAttr(c)
             if array != defaultValues:
                 passed = False
+                status = "ERROR"
                 errorsSentence = [transform[i] for i in range(0, len(transform))
                                   if array[i] <= defaultValues[i] + 0.001 and
                                   array[i] >= defaultValues[i] - 0.001 and
@@ -62,5 +65,6 @@ def test():
                 errorsSentence = ", ".join(errorsSentence)
                 errors.append("\t" + c + " -> " + errorsSentence)
     if passed:
+        status = "SUCCESS"
         errors = []
-    return passed, errors
+    return status, errors

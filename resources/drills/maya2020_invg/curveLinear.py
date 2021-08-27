@@ -12,8 +12,8 @@ title = u"Vérification de la linéarite des courbe d'animation"
 image = "curveLinear"
 tags = "asset", "rig", "cs"
 
-def test():
-    passed = True
+def main():
+    status = "SUCCESS"
     errors = []
     for s in cmds.ls(type="animCurve"):
     #    log(s)
@@ -26,11 +26,11 @@ def test():
             tangents += cmds.keyTangent(s, q=True, itt=True, index=(i,i))
             tangents += cmds.keyTangent(s, q=True, ott=True, index=(i,i))
         if len(tangents) == 0:
-            passed = False
+            status = "ERROR"
             errors.append(str(s) + " is an anim curve, but has no key")
             continue
         if not (tangents.count(tangents[0]) == len(tangents) and tangents[0] == "linear"):
-            passed = False
+            status = "ERROR"
             errors.append(str(s) + " " + str(tangents))
-    return passed, errors
+    return status, errors
 

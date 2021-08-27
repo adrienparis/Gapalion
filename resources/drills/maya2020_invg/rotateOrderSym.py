@@ -13,8 +13,8 @@ title = u"Vérification de la symétrie des rotates orders"
 image = ""
 tags = "rig", "cs", "symetric"
 
-def test():
-    passed = True
+def main():
+    status = "SUCCESS"
     errors = []
     for s in cmds.ls(type="transform"):
         if s[-2:] == "_L":
@@ -23,11 +23,12 @@ def test():
                 errors.append("does not exists : " + r)
                 continue
             if cmds.getAttr(s + ".rotateOrder") != cmds.getAttr(r + ".rotateOrder"):
-                passed = False
+                status = "ERROR"
                 errors.append("not symetric : {0: <20} -> \t \t {1: <24}".format(s, r))
         if s[-2:] == "_R":
             r = s[:-2] + "_L"
             if not cmds.objExists(r):
+                status = "WARNING"
                 errors.append("does not exists : " + r)
                 continue
-    return passed, errors
+    return status, errors

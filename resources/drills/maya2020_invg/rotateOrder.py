@@ -13,8 +13,9 @@ title = u"Vérification des rotate Order pour biped classic"
 image = ""
 tags = "rig", "cs", "humanoid"
 
-def test():
+def main():
     errors = []
+    status = "SUCCESS"
     elems = ["sk_wrist", "ik_wrist", "c_IK_wrist", "pose_IK_wrist", "inf_IK_wrist", "root_IK_wrist",
              "c_FK_wrist", "pose_FK_wrist", "inf_FK_wrist", "root_FK_wrist",
              "sk_wrist0", "sk_wristOri", "sk_foreArm", "reverseHand", "c_IK_hand", "c_FK_hand", "grp_fingers"]
@@ -23,12 +24,13 @@ def test():
             name = e + "_" + s
             if cmds.objExists(name):
                 if cmds.getAttr(name + ".rotateOrder") != 3:
+                    status = "ERROR"
                     errors.append(name)
 
-    return len(errors) == 0, errors
+    return status, errors
 
 if __name__ == "__main__":
-    p, m = test()
+    p, m = main()
     if p:
         print("##########")
         print("# PASSED #")

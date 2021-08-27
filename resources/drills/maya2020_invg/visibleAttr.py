@@ -12,8 +12,8 @@ image = "eye"
 tags = "asset", "rig", "cs"
 
 
-def test():
-    passed = True
+def main():
+    status = "SUCCESS"
     errors = []
     unhides = []
     unlocks = []
@@ -21,7 +21,7 @@ def test():
     for s in cmds.ls(type="transform"):
         if s.startswith("c_"):
             if cmds.getAttr(s + ".v", k=True) or not cmds.getAttr(s + ".v", l=True):
-                passed = False
+                status = "ERROR"
             if cmds.getAttr(s + ".v", k=True) and not cmds.getAttr(s + ".v", l=True):
                 both.append(s)
             elif cmds.getAttr(s + ".v", k=True):
@@ -40,4 +40,4 @@ def test():
         errors.append("The folowing controller has theire visibility attribute unlocked :")
         for v in unlocks:
             errors.append("\t" + v)
-    return passed, errors
+    return status, errors

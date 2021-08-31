@@ -1,4 +1,3 @@
-print("importing maya2020 test module")
 import sys
 from os.path import dirname, basename, isfile, join
 import glob

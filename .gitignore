@@ -136,3 +136,5 @@ config
 jargon_tmp
 
 srcs/tests/*
+
+projectTemplate

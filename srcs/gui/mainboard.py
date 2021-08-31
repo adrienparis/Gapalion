@@ -2,14 +2,36 @@
 # -- coding: utf-8 --
 
 '''Interface for Gapalion'''
+import sys
+# from PySide6.QtWidgets import QApplication, QWidget, QDialog, QLineEdit, QPushButton, QTabBar, QTabWidget
+# from PySide6.QtGui import QIcon, QStylePainter, QStyleOptionTab
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+from PySide6.QtCore import *
 
 __author__      = "Adrien PARIS"
 __email__       = "a.paris.cs@gmail.com"
 
-import sys
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
+class ParameterForm(QWidget):
+    def __init__(self, *args, **kwargs):
+        super(ParameterForm, self).__init__(*args, **kwargs)
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        self.line_edit = QLineEdit()
+        layout.addWidget(self.line_edit)
+
+        self.label = QLabel()
+        layout.addWidget(self.label)
+
+        self.line_edit.textChanged.connect(self.line_edit_text_changed)
+
+        self.show()
+
+    def line_edit_text_changed(self, text):
+        self.label.setText(text)
+
 
 class TabBar(QTabBar):
     def tabSizeHint(self, index):
@@ -48,25 +70,13 @@ class MainTabWidget(QTabWidget):
         self.setTabBar(TabBar(self))
         self.setTabPosition(QTabWidget.West)
 
+class Form(QDialog):
 
-class MyWindow( QMainWindow ):
-    
-    def __init__ ( self ) :
-        QMainWindow.__init__( self )
-        self.setWindowTitle( 'First steps With PySide2 and Python3' )
-        self.setWindowIcon( QIcon('icon.png') )
-        self.resize(400, 300)
-
-        self.__button1 = QPushButton( "First button", self )
-        self.__button1.setGeometry(10, 10, 200, 35)
-    
-        self.__button2 = QPushButton( "Second button", self )
-        self.__button2.setGeometry(20, 50, 200, 35)
-        self.__buttonPlop = QPushButton( "third button", self )
-        self.__buttonPlop.setGeometry(30, 90, 200, 35)
-        img = r"D:\creative seed\script\verificator\images\eye.png"
+    def __init__(self, parent=None):
+        super(Form, self).__init__(parent)
+        self.setWindowTitle("Gapalion")
         img_path = "D:\\creative seed\\script\\Gapalion\\img\\"
-        
+
         w = MainTabWidget(self)
         w.addTab(QWidget(),QIcon(img_path + "User.png"), "Utilisateurs") # gérer les utilisateurs, leurs logins, et adresses mails
         w.addTab(QWidget(),QIcon(img_path + "Project.png"), "Projets") # nom du projet, chemins, + examens à faire passer et thèmes à appliquer
@@ -75,16 +85,18 @@ class MyWindow( QMainWindow ):
         w.addTab(QWidget(),QIcon(img_path + "Trial.png"), "épreuves") # Créations d'épreuves en fonctions des soft et des tags de selection ou listage des tests
         w.addTab(QWidget(),QIcon(img_path + ".png"), "Programation") # Quand executer le script
         w.addTab(QWidget(),QIcon(img_path + ".png"), "Thèmes") # gestion des thèmes
-        w.addTab(QWidget(),QIcon(img_path + ".png"), "Paramètre") # ? gestion du thème de l'interface? definition du chemin du dossier resources? definition du mayapy?
-        self.__tab = w
-        self.__tab.setGeometry(10, 140, 800, 800)
-        self.__tab.show()
+        w.addTab(ParameterForm(),QIcon(img_path + ".png"), "Paramètre") # ? gestion du thème de l'interface? definition du chemin du dossier resources? definition du mayapy?
         
 
-if __name__ == "__main__" :
-    app = QApplication( sys.argv )
+def show():
+    # Create the Qt Application
+    app = QApplication(sys.argv)
+    # Create and show the form
+    form = Form()
+    form.show()
+    # Run the main Qt loop
+    sys.exit(app.exec())
 
-    myWindow = MyWindow()
-    myWindow.show()
-    
-    sys.exit( app.exec_() )
+
+if __name__ == "__main__":
+    show()

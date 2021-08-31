@@ -1,0 +1,1 @@
+python "srcs\main.py"

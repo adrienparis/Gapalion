@@ -138,3 +138,4 @@ jargon_tmp
 srcs/tests/*
 
 projectTemplate
+*.tree

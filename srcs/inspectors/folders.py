@@ -59,10 +59,13 @@ class item(object):
                 c.print(depth + 1)
 
     def printToFile(self, file, depth: int = 0):
-        mistake = "❌" * self.unwanted + "⭕" * self.missing + "✅" * (not (self.unwanted + self.missing))
+        
+        mistake = "✅" if not (self.unwanted or self.missing) else "❌"
+        mistake += "🗑" * self.unwanted + "📌" * self.missing
         typeChar = "📂" if self.isDir else "📄" if self.isFile else "🗿"
         # print(mistake + "—" * depth + typeChar + self.name)
-        l = [mistake + "—" * depth + typeChar + self.name + "\n"]
+        name = "  " * depth + typeChar + self.name
+        l = [name + "—" * (80 - len(name)) + "\t" + mistake + "\n"]
         if self.isDir:
             for c in self.children:
                 l += c.printToFile(file, depth + 1)
@@ -81,15 +84,22 @@ class item(object):
         return line
 
     def isIn(self, others: List['item']) -> bool:
+        for o in others:
+            if o.name == "*":
+                print(self.name, o.name, item.matchnmatch(self.name, o.name))
+            if item.matchnmatch(self.name, o.name):
+                return True
         return False
     
     @staticmethod
-    def matchnmatch(a, b):
+    def matchnmatch(a, b) -> bool:
         if len(a) == 0:
             return False
         if len(b) == 0:
             return True
         if a[0] == b[0]:
+            return item.matchnmatch(a, b[1:])
+        if b[0] == '*':
             return item.matchnmatch(a, b[1:])
         if a[0] != b[0]:
             return item.matchnmatch(a[1:], b)
@@ -102,7 +112,7 @@ class item(object):
         if self.name != other.name:
             print("{} != {}".format(self.name, other.name))
         for c in self.children:
-            if c.name not in [x.name for x in other.children if x.obligation == '!']:
+            if not c.isIn([x for x in other.children if x.obligation != '-']):
                 # print("unwanted : {}".format(c.toStrFullPath()))
                 c.setValueToChild("unwanted", True)
                 continue
@@ -115,7 +125,7 @@ class item(object):
                         print("{} and {} are not the same kind of file/directory".format(c.name, oc.name))
                     c.compareTo(oc)
         for oc in other.children:
-            if oc.name not in [x.name for x in self.children]:
+            if oc.name not in [x.name for x in self.children if oc.obligation != '!']:
                 # print("missing : {}".format(oc.toStrFullPath()))
                 c = copy.deepcopy(oc)
                 c.setValueToChild("missing", True)
@@ -195,15 +205,15 @@ def listFolder(path, depht=0):
     return l
         
 
-# print(listFolder(r"S:\a.paris\Resources\CheckProject\projectTemplate\nomDuProjet"))
-# projectFolder = item.getTreeFromPath(r"S:\a.paris\Resources\CheckProject\projectTemplate\nomDuProjet")
+# print(listFolder(r"Q:\bank\bankCS\ressources\projectTemplate\nomDuProjet"))
+# projectFolder = item.getTreeFromPath(r"Q:\bank\bankCS\ressources\projectTemplate\nomDuProjet")
 # print(projectFolder.toStr())
-# projectFolder.save(r"S:\a.paris\Resources\CheckProject\projectTemplate\template")
+# projectFolder.save(r"S:\a.paris\Atelier\Gapalion\resources\drills\folders\cs-template")
 
 # projectFolder = item.getTreeFromFile(r"projectTemplate\template.tree")
 # item.getTreeFromFile(r"projectTemplate\template.tree").compareTo(item.getTreeFromPath(r"projectTemplate\nomDuProjet"))
 # item.getTreeFromPath(r"D:\creative seed\projet\pnl").compareTo(item.getTreeFromFile(r"projectTemplate\template.tree")).print()
 # item.getTreeFromPath(r"projectTemplate\nomDuProjet").compareTo(item.getTreeFromFile(r"projectTemplate\template.tree")).print()
-item.getTreeFromPath(r"D:\creative seed\projet\pfa").compareTo(item.getTreeFromFile(r"projectTemplate\template.tree")).printToFile("pfa.tree")
-item.getTreeFromPath(r"D:\creative seed\Atelier\année02.2\semestre02\missonPossible").compareTo(item.getTreeFromFile(r"projectTemplate\template.tree")).printToFile("mp.tree")
+# item.getTreeFromPath(r"D:\creative seed\projet\pfa").compareTo(item.getTreeFromFile(r"projectTemplate\template.tree")).printToFile("pfa.tree")
+item.getTreeFromPath(r"S:\a.paris\Atelier\sosuke").compareTo(item.getTreeFromFile(r"resources\drills\folders\cs-template.tree")).printToFile("sosuke.result")
 

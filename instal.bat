@@ -1,13 +1,13 @@
-:: Check for Python Installation
+@echo off
 python --version 3>NUL
 if errorlevel 1 goto errorNoPython
 
+if exist gapalienv\ (
+    rmdir /s /q gapalienv
+)
+python -m venv gapalienv
+gapalienv\Scripts\pip.exe install -r requirements.txt
 
-:: Reaching here means Python is installed.
-:: Execute stuff...
-pip3 install -r requirements.txt
-
-:: Once done, exit the batch file -- skips executing the errorNoPython section
 goto:eof
 
 :errorNoPython
